@@ -5,6 +5,13 @@ const createElements = (arr) => {
   return htmlElements.join(" ");
 };
 
+// speak vocabularies
+function pronounceWord(word) {
+  const utterance = new SpeechSynthesisUtterance(word);
+  utterance.lang = "en-EN"; // English
+  window.speechSynthesis.speak(utterance);
+}
+
 // spinner function
 const manageSpinner = (status) => {
   if (status === true) {
@@ -162,7 +169,9 @@ const displayLevelWord = (words) => {
             })"  class="btn bg-[#1a91ff1a] border-none hover:bg-[#1a91ff80]">
               <i class="fa-solid fa-circle-info text-lg"></i>
             </button>
-            <button class="btn bg-[#1a91ff1a] border-none hover:bg-[#1a91ff80]">
+            <button onclick="pronounceWord('${
+              word.word
+            }')" class="btn bg-[#1a91ff1a] border-none hover:bg-[#1a91ff80]">
               <i class="fa-solid fa-volume-high text-lg"></i>
             </button>
           </div>
