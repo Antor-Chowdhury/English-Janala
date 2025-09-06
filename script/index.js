@@ -6,6 +6,13 @@ const loadLessons = () => {
     .then((json) => displayLesson(json.data));
 };
 
+const removeActive = () => {
+  const lessonButtons = document.querySelectorAll(".lesson-btn");
+  // console.log(lessonButtons);
+
+  lessonButtons.forEach((btn) => btn.classList.remove("active"));
+};
+
 // ----- Calling api for level-word
 
 const loadLevelWord = (id) => {
@@ -16,7 +23,70 @@ const loadLevelWord = (id) => {
 
   fetch(url)
     .then((response) => response.json())
-    .then((data) => displayLevelWord(data.data));
+    .then((data) => {
+      removeActive(); // remove all active class
+      const clickBtn = document.getElementById(`lesson-btn-${id}`);
+      // console.log(clickBtn);
+
+      clickBtn.classList.add("active"); // add active class
+
+      displayLevelWord(data.data);
+    });
+};
+
+const loadWordDetail = async (id) => {
+  const url = `https://openapi.programming-hero.com/api/word/${id}`;
+  // console.log(url);
+
+  const response = await fetch(url);
+  const details = await response.json();
+  displayWordDetails(details.data);
+};
+
+// {
+//     "word": "Eager",
+//     "meaning": "আগ্রহী",
+//     "pronunciation": "ইগার",
+//     "level": 1,
+//     "sentence": "The kids were eager to open their gifts.",
+//     "points": 1,
+//     "partsOfSpeech": "adjective",
+//     "synonyms": [
+//         "enthusiastic",
+//         "excited",
+//         "keen"
+//     ],
+//     "id": 5
+// }
+
+const displayWordDetails = (word) => {
+  console.log(word);
+
+  const detailsBox = document.getElementById("details-container");
+  detailsBox.innerHTML = `
+  <div class="">
+              <h2 class="font-semibold text-4xl">
+                ${word.word} (<i class="fa-solid fa-microphone-lines"></i> : ${word.pronunciation})
+              </h2>
+            </div>
+            <div class="">
+              <h2 class="font-semibold text-2xl mb-2">Meaning</h2>
+              <p class="font-bangla font-medium text-2xl">${word.meaning}</p>
+            </div>
+            <div class="">
+              <h2 class="font-semibold text-2xl mb-2">Example</h2>
+              <p class="text-2xl">${word.sentence}</p>
+            </div>
+            <div class="">
+              <h2 class="font-bangla font-medium text-2xl mb-2">
+                সমার্থক শব্দ গুলো
+              </h2>
+              <span class="btn bg-[#edf7ff]">${word.synonyms[0]}</span>
+              <span class="btn bg-[#edf7ff]">${word.synonyms[1]}</span>
+              <span class="btn bg-[#edf7ff]">${word.synonyms[2]}</span>
+            </div>
+  `;
+  document.getElementById("word_modal").showModal();
 };
 
 // ----- displaying the level-word
@@ -51,7 +121,7 @@ const displayLevelWord = (words) => {
   // }
 
   words.forEach((word) => {
-    console.log(word);
+    // console.log(word);
 
     const card = document.createElement("div");
     card.innerHTML = `
@@ -67,7 +137,9 @@ const displayLevelWord = (words) => {
       word.pronunciation ? word.pronunciation : "pronunciation পাওয়া যায়নি"
     }"</div>
           <div class="flex justify-between items-center">
-            <button class="btn bg-[#1a91ff1a] border-none hover:bg-[#1a91ff80]">
+            <button onclick="loadWordDetail(${
+              word.id
+            })"  class="btn bg-[#1a91ff1a] border-none hover:bg-[#1a91ff80]">
               <i class="fa-solid fa-circle-info text-lg"></i>
             </button>
             <button class="btn bg-[#1a91ff1a] border-none hover:bg-[#1a91ff80]">
@@ -93,7 +165,7 @@ const displayLesson = (lessons) => {
     //      3. create Element
     const btnDiv = document.createElement("div");
     btnDiv.innerHTML = `
-        <button onclick="loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary">
+        <button id="lesson-btn-${lesson.level_no}" onclick="loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary lesson-btn">
          <i class="fa-solid fa-book-open"></i> Lesson - ${lesson.level_no}
         </button>
     `;
