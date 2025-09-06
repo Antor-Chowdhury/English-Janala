@@ -1,3 +1,21 @@
+const createElements = (arr) => {
+  const htmlElements = arr.map(
+    (el) => `<span class="btn bg-[#edf7ff]">${el}</span>`
+  );
+  return htmlElements.join(" ");
+};
+
+// spinner function
+const manageSpinner = (status) => {
+  if (status === true) {
+    document.getElementById("spinner").classList.remove("hidden");
+    document.getElementById("word-container").classList.add("hidden");
+  } else {
+    document.getElementById("word-container").classList.remove("hidden");
+    document.getElementById("spinner").classList.add("hidden");
+  }
+};
+
 // ----- calling api for lesson
 
 const loadLessons = () => {
@@ -16,6 +34,7 @@ const removeActive = () => {
 // ----- Calling api for level-word
 
 const loadLevelWord = (id) => {
+  manageSpinner(true);
   //   console.log(id);
   const url = `https://openapi.programming-hero.com/api/level/${id}
   `;
@@ -66,7 +85,9 @@ const displayWordDetails = (word) => {
   detailsBox.innerHTML = `
   <div class="">
               <h2 class="font-semibold text-4xl">
-                ${word.word} (<i class="fa-solid fa-microphone-lines"></i> : ${word.pronunciation})
+                ${word.word} (<i class="fa-solid fa-microphone-lines"></i> : ${
+    word.pronunciation
+  })
               </h2>
             </div>
             <div class="">
@@ -81,9 +102,7 @@ const displayWordDetails = (word) => {
               <h2 class="font-bangla font-medium text-2xl mb-2">
                 সমার্থক শব্দ গুলো
               </h2>
-              <span class="btn bg-[#edf7ff]">${word.synonyms[0]}</span>
-              <span class="btn bg-[#edf7ff]">${word.synonyms[1]}</span>
-              <span class="btn bg-[#edf7ff]">${word.synonyms[2]}</span>
+              <div class="">${createElements(word.synonyms)}</div>
             </div>
   `;
   document.getElementById("word_modal").showModal();
@@ -109,6 +128,7 @@ const displayLevelWord = (words) => {
           </h2>
     </div>
     `;
+    manageSpinner(false);
     return;
   }
 
@@ -150,6 +170,8 @@ const displayLevelWord = (words) => {
     `;
     wordContainer.append(card);
   });
+
+  manageSpinner(false);
 };
 
 // ----- displaying the Lesson
