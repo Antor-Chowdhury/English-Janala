@@ -27,12 +27,33 @@ const displayLevelWord = (words) => {
   const wordContainer = document.getElementById("word-container");
   wordContainer.innerHTML = "";
 
+  //   {
+  //     "id": 19,
+  //     "level": 1,
+  //     "word": "Sincere",
+  //     "meaning": "সত্‍ / আন্তরিক",
+  //     "pronunciation": "সিনসিয়ার"
+  // }
+
   words.forEach((word) => {
     console.log(word);
 
     const card = document.createElement("div");
     card.innerHTML = `
-    <p>Cat</p>
+            <div class="bg-white rounded-lg shadow-sm text-center p-14 space-y-5">
+          <h2 class="font-bold text-3xl">${word.word}</h2>
+          <p class="font-medium text-xl">Meaning /Pronounciation</p>
+
+          <div class="font-bangla font-semibold text-3xl">"${word.meaning} / ${word.pronunciation}"</div>
+          <div class="flex justify-between items-center">
+            <button class="btn bg-[#1a91ff1a] border-none hover:bg-[#1a91ff80]">
+              <i class="fa-solid fa-circle-info text-lg"></i>
+            </button>
+            <button class="btn bg-[#1a91ff1a] border-none hover:bg-[#1a91ff80]">
+              <i class="fa-solid fa-volume-high text-lg"></i>
+            </button>
+          </div>
+        </div>
     `;
     wordContainer.append(card);
   });
